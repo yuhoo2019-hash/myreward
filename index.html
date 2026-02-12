@@ -3,38 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎂 生日專屬戳戳樂</title>
+    <title>🎂 專屬於你的驚喜 </title>
     <style>
         :root { --main-color: #ff4d6d; --bg-color: #fff5f5; }
         body { font-family: 'PingFang TC', sans-serif; background: var(--bg-color); text-align: center; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        .container { max-width: 400px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         
-        /* 戳戳樂網格 */
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .cell { aspect-ratio: 1/1; background: #ffb3c1; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: 0.3s; color: white; border: 2px dashed white; }
+        /* 戳戳樂 */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+        .cell { aspect-ratio: 1/1; background: #ffb3c1; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; transition: transform 0.2s, background 0.3s; color: white; border: 2px dashed rgba(255,255,255,0.5); }
+        .cell:active { transform: scale(0.9); }
         .cell.opened { background: #ffe3e0; border: none; cursor: default; }
 
-        /* 抽獎動畫 */
-        #slot-machine { font-size: 32px; font-weight: bold; color: var(--main-color); height: 60px; line-height: 60px; margin: 20px 0; border: 2px solid #ff4d6d; border-radius: 10px; background: #fff; overflow: hidden; display: none;}
-        .prize-item { animation: scroll 0.1s infinite linear; }
-        
-        @keyframes scroll {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
+        /* 神秘抽獎盒 */
+        #slot-machine { 
+            font-size: 24px; font-weight: bold; color: white; height: 80px; line-height: 80px; 
+            margin: 20px 0; border-radius: 15px; background: linear-gradient(45deg, #ff4d6d, #ff8fa3); 
+            display: none; box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
         }
+        
+        .rolling-text { animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { opacity: 0.5; } to { opacity: 1; } }
 
-        button { background: var(--main-color); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-size: 18px; cursor: pointer; margin-top: 20px; }
+        button { background: var(--main-color); color: white; border: none; padding: 15px 35px; border-radius: 50px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3); }
         .hidden { display: none; }
-        .msg { margin-top: 15px; font-weight: bold; color: #d63384; }
+        .msg { margin-top: 15px; font-size: 18px; font-weight: bold; color: #d63384; }
+        #final-prize { font-size: 30px; color: #ff4d6d; display:none; margin-top: 20px; padding: 20px; border: 3px double #ff4d6d; border-radius: 15px; background: #fff0f3; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="start-page">
-        <h1>🎂 生日快樂跟我走 ~ </h1>
-        <p>這是一個專屬於你的驚喜活動。<br>通過小測驗，領取生日大獎吧！</p>
-        <button onclick="startGame()">開始戳戳樂</button>
+        <h1 style="color: #ff4d6d;">🎂 生日快樂跟我走 ~</h1>
+        <p>親愛的，試試你的手氣<br>集齊 3 個 🎂 看看抽到什麼！</p>
+        <button onclick="startGame()">開始活動</button>
     </div>
 
     <div id="game-page" class="hidden">
@@ -44,20 +47,28 @@
     </div>
 
     <div id="draw-page" class="hidden">
-        <h1>🎉 挑戰成功！</h1>
-        <p>點擊按鈕抽取妳的生日大獎</p>
-        <div id="slot-machine"></div>
-        <button id="draw-btn" onclick="startDraw()">開始抽獎</button>
+        <h2 id="draw-title">🎉 挑戰成功！</h2>
+        <p id="draw-p">恭喜獲得了一次抽取「終極大獎」的機會</p>
+        
+        <div id="slot-machine">🎁 準備揭曉...</div>
+        
+        <div id="final-prize"></div>
+
+        <button id="draw-btn" onclick="startDraw()">點擊揭曉大獎</button>
     </div>
 </div>
 
 <script>
-    // --- 這裡設定妳的獎項 ---
-    const prizeList = ["沖繩來回機票 (自費部分)", "沖繩來回機票 (無需自費)", "沖繩來回機票 包含自由行", "沖繩來回機票 找團跟行程", "獲得生日祝福"];
+    // --- 這裡設定最後抽中的獎項 ---
+    // 你可以放多個讓它隨機，或是只放一個「必中大獎」
+    const finalPrizes = ["沖繩來回機票 (自費部分)", "沖繩來回機票 (無需自費)", "沖繩來回機票 包含自由行", "沖繩來回機票 找團跟行程", "獲得生日祝福"];
+    
+    // 動畫期間顯示的神祕文字（不顯示真實獎項）
+    const loadingTexts = ["💖 加載愛心中...", "🎡 轉動幸運輪...", "💎 計算驚喜值...", "🎀 正在拆開禮物...", "🌈 奇蹟發生中..."];
+
     let count = 0;
     let openedCells = 0;
 
-    // 初始化九宮格
     function startGame() {
         document.getElementById('start-page').classList.add('hidden');
         document.getElementById('game-page').classList.remove('hidden');
@@ -65,68 +76,72 @@
         for (let i = 0; i < 9; i++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
-            cell.innerHTML = '❤️';
+            cell.innerHTML = '❓'; // 用問號增加神祕感
             cell.onclick = () => poke(cell);
             grid.appendChild(cell);
         }
     }
 
-    // 戳戳樂邏輯
     function poke(cell) {
         if (cell.classList.contains('opened')) return;
-        
         cell.classList.add('opened');
         openedCells++;
 
-        // 強制在第 1, 3, 5 次戳到蛋糕，保證一定會贏
-        if (count < 3 && (openedCells % 2 !== 0)) {
+        // 第 2, 4, 6 次戳必中 (你可以自己改規律)
+        if (count < 3 && (openedCells % 2 === 0)) {
             cell.innerHTML = '🎂';
             count++;
         } else {
-            cell.innerHTML = '🌸';
+            cell.innerHTML = '🎈';
         }
 
         document.getElementById('status').innerHTML = `已收集: ${count} / 3 🎂`;
 
         if (count === 3) {
             setTimeout(() => {
-                alert("太棒了！湊齊 3 個🎂，準備抽獎！");
-                goToDraw();
-            }, 500);
+                document.getElementById('game-page').classList.add('hidden');
+                document.getElementById('draw-page').classList.remove('hidden');
+            }, 600);
         }
     }
 
-    function goToDraw() {
-        document.getElementById('game-page').classList.add('hidden');
-        document.getElementById('draw-page').classList.remove('hidden');
-    }
-
-    // 抽獎動畫
     function startDraw() {
         const btn = document.getElementById('draw-btn');
         const slot = document.getElementById('slot-machine');
-        btn.disabled = true;
+        btn.style.display = 'none';
         slot.style.display = 'block';
         
         let timer = 0;
         const interval = setInterval(() => {
-            slot.innerHTML = `<div class="prize-item">${prizeList[Math.floor(Math.random() * prizeList.length)]}</div>`;
-            timer += 100;
-            if (timer > 3000) { // 跑 3 秒動畫
+            // 動畫期間只顯示神祕文字
+            slot.innerHTML = `<span class="rolling-text">${loadingTexts[Math.floor(Math.random() * loadingTexts.length)]}</span>`;
+            timer += 150;
+            
+            if (timer > 3000) { 
                 clearInterval(interval);
-                finishDraw();
+                revealPrize();
             }
-        }, 100);
+        }, 150);
     }
 
-    function finishDraw() {
+    function revealPrize() {
         const slot = document.getElementById('slot-machine');
-        // 最後結果可以隨機，或固定設定 prizeList[0]
-        const finalPrize = prizeList[Math.floor(Math.random() * prizeList.length)];
-        slot.innerHTML = `⭐ ${finalPrize} ⭐`;
-        slot.style.animation = 'none';
-        slot.style.background = '#fff3bf';
-        alert(`恭喜妳抽中了：${finalPrize}！`);
+        const result = document.getElementById('final-prize');
+        const title = document.getElementById('draw-title');
+        const p = document.getElementById('draw-p');
+
+        slot.style.display = 'none'; // 隱藏抽獎盒
+        title.innerHTML = "🎊 恭喜妳獲得 🎊";
+        p.style.display = 'none';
+
+        // 從清單中隨機選一個，或是固定選第一個
+        const luckyWin = finalPrizes[Math.floor(Math.random() * finalPrizes.length)];
+        
+        result.innerHTML = luckyWin;
+        result.style.display = 'block';
+        
+        // 增加一點震動感
+        result.style.animation = 'pulse 0.5s ease';
     }
 </script>
 
