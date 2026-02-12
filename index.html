@@ -17,13 +17,13 @@
 
 <div class="container">
     <div id="start-section">
-        <h1>🎂 寶貝，生日快樂！</h1>
-        <p>這是一個專屬於妳的驚喜活動。<br>通過小測驗，領取妳的生日大獎吧！</p>
+        <h1>🎂 生日快樂跟我走 ~ </h1>
+        <p>這是一個專屬於你的驚喜活動。<br>通過小測驗，領取生日大獎吧！</p>
         <button onclick="startChallenge()">進入挑戰</button>
     </div>
 
     <div id="game-section">
-        <h2 id="question">123: 請輸入:</h2>
+        <h2 id="question">輸入我目前在想什麼: </h2>
         <input type="text" id="answer" style="padding: 10px; width: 80%; border-radius: 10px; border: 1px solid #ddd;">
         <br>
         <button onclick="checkAnswer()">提交答案</button>
@@ -31,8 +31,8 @@
 
     <div id="result-section">
         <h1>🎉 挑戰成功！</h1>
-        <p>現在，請抽取妳的專屬獎勵：</p>
-        <div id="rolling" style="font-size: 20px; color: #888;">正在計算妳表現的積分...</div>
+        <p>現在，請抽取專屬獎勵：</p>
+        <div id="rolling" style="font-size: 20px; color: #888;">正在計算積分...</div>
         <div id="prize-display" class="prize-text"></div>
         <button id="draw-btn" onclick="drawPrize()">點我抽獎</button>
     </div>
@@ -42,10 +42,10 @@
     // --- 你可以在這裡自定義內容 ---
     const correctAnswers = ["台北", "2022"]; // 範例答案
     const prizes = [
-        "🎁 巴黎來回機票 (或是等值的大餐)",
-        "💌 幫妳洗碗一整個月券",
-        "💄 妳心儀已久的那支口紅",
-        "✨ 清空購物車權利一次"
+        "🎁 沖繩來回機票 (自費部分)",
+        "🇯🇵 沖繩來回機票 (無需自費)",
+        "✈️ 沖繩來回機票 包含自由行",
+        "🎌 沖繩來回機票 找團跟行程"
     ];
     
     let currentStep = 0;
@@ -57,7 +57,7 @@
 
     function checkAnswer() {
         // 這裡為了好玩，不管輸入什麼都讓她過，或者你可以嚴格審核
-        alert("回答正確！妳果然最愛我了 ❤️");
+        alert("回答正確！你果然最愛我了 ❤️");
         document.getElementById('game-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
     }
@@ -82,3 +82,4 @@
 </body>
 
 </html>
+
